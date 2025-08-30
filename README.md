@@ -149,3 +149,118 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## API Documentation
+
+Interactive API documentation is available via Swagger UI at `/api` when the service is running.
+
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive deployment instructions for GCP and other cloud platforms.
+
+## Future Improvements
+
+This proof-of-concept demonstrates core functionality, but several enhancements would be needed for a production-ready, highly scalable system:
+
+### 🚀 **Scalability & Performance**
+
+#### **Message Queue/Broker Integration**
+- **Replace in-memory job storage** with Redis or a persistent database
+- **Implement message queues** (Redis Bull, AWS SQS, RabbitMQ) for URL processing
+- **Horizontal scaling**: Multiple worker instances can process jobs from the same queue
+- **Rate limiting**: Control concurrent URL fetches to prevent overwhelming target servers
+- **Priority queues**: Process high-priority jobs first
+
+#### **Caching Layer**
+- **Content caching**: Cache frequently requested content with TTL
+- **Response caching**: Cache job status responses to reduce database load
+- **CDN integration**: Store large content files in S3/CloudFront for global distribution
+
+#### **Database Integration**
+- **Persistent storage**: Replace in-memory storage with PostgreSQL/MongoDB
+- **Job metadata**: Store job history, user information, fetch analytics
+- **Content storage**: Use object storage (S3, GCS) for large files instead of database
+
+### 📊 **Monitoring & Observability**
+
+#### **Application Monitoring**
+- **Health checks**: Comprehensive endpoints for load balancer health checks
+- **Metrics collection**: Prometheus/Grafana for performance metrics
+- **APM integration**: New Relic, DataDog, or Jaeger for distributed tracing
+- **Custom metrics**: Job completion rates, fetch success rates, response times
+
+#### **Logging & Alerting**
+- **Structured logging**: JSON logs with correlation IDs
+- **Centralized logging**: ELK Stack (Elasticsearch, Logstash, Kibana)
+- **Error alerting**: PagerDuty/Slack notifications for service failures
+- **Performance alerts**: CPU, memory, disk usage thresholds
+
+### 🔒 **Security & Reliability**
+
+#### **Authentication & Authorization**
+- **API keys**: Rate-limited access per client
+- **JWT tokens**: User-based authentication
+- **Role-based access**: Admin vs. regular user permissions
+- **IP whitelisting**: Restrict access to known clients
+
+#### **Input Validation & Security**
+- **URL validation**: Prevent SSRF attacks, validate URL schemes
+- **Content filtering**: Scan for malicious content
+- **Size limits**: Prevent fetching excessively large files
+- **Timeout controls**: Prevent hanging requests
+
+#### **Resilience**
+- **Circuit breakers**: Fail fast when downstream services are unavailable
+- **Retry mechanisms**: Exponential backoff for failed URL fetches
+- **Graceful degradation**: Continue operation even if some components fail
+- **Auto-scaling**: Scale workers based on queue depth
+
+### 🏗️ **Architecture Enhancements**
+
+#### **Microservices Architecture**
+- **URL Submission Service**: Handle job creation and validation
+- **Fetch Worker Service**: Dedicated workers for URL processing
+- **Content Storage Service**: Manage content storage and retrieval
+- **API Gateway**: Route requests, handle authentication, rate limiting
+
+#### **Event-Driven Architecture**
+- **Event sourcing**: Track all state changes as events
+- **CQRS pattern**: Separate read/write models for better performance
+- **Webhooks**: Notify clients when jobs complete
+- **Real-time updates**: WebSocket connections for live job status
+
+### 📈 **Analytics & Business Intelligence**
+
+#### **Usage Analytics**
+- **Fetch statistics**: Success rates, popular domains, response times
+- **User behavior**: Job patterns, peak usage times
+- **Performance insights**: Bottleneck identification, optimization opportunities
+- **Cost analysis**: Resource usage per job, pricing optimization
+
+#### **Reporting Dashboard**
+- **Real-time dashboards**: Service health, active jobs, throughput
+- **Historical reports**: Usage trends, error patterns
+- **SLA monitoring**: Response time percentiles, uptime tracking
+
+### 🔧 **Developer Experience**
+
+#### **API Enhancements**
+- **Webhooks**: POST notifications when jobs complete
+- **Bulk operations**: Submit multiple jobs in a single request
+- **Job templates**: Predefined URL sets for common use cases
+- **Result filtering**: Query specific job results by status, date, etc.
+
+#### **SDK & Integration**
+- **Client SDKs**: Python, JavaScript, Go libraries
+- **CLI tool**: Command-line interface for power users
+- **API versioning**: Backward-compatible API evolution
+- **GraphQL endpoint**: Alternative to REST for complex queries
+
+### 🌍 **Multi-Region & High Availability**
+
+#### **Geographic Distribution**
+- **Multi-region deployment**: Reduce latency for global users
+- **Edge processing**: Process URLs from nearest geographic location
+- **Data replication**: Cross-region backup and disaster recovery
+- **CDN integration**: Global content distribution
+
+This roadmap transforms the current POC into an enterprise-grade, globally scalable URL fetching platform capable of handling millions of requests while maintaining high reliability and performance standards.
