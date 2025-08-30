@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import open from 'open';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,10 +18,17 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
+  console.log(`Swagger UI available at: http://localhost:${port}/api`);
 
-  // Automatically open the Swagger UI in development mode
+  // Automatically open the Swagger UI in development mode only
   if (process.env.NODE_ENV !== 'production') {
-    await open(`http://localhost:${port}/api`);
+    try {
+      const { default: open } = await import('open');
+      await open(`http://localhost:${port}/api`);
+    } catch (error) {
+      console.log('Could not auto-open browser:', error.message);
+    }
   }
 }
 bootstrap();
